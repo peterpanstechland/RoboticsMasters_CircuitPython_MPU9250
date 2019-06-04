@@ -14,3 +14,8 @@ Please ensure all dependencies are available on the CircuitPython filesystem. Th
 # Usage Example
 
 See examples/imu.py for a demo of the usage.
+
+# Add submodules
+```bash
+git submodule add https://github.com/peterpanstechland/RoboticsMasters_CircuitPython_MPU9250.git frozen/RoboticsMasters_CircuitPython_MPU9250
+```
