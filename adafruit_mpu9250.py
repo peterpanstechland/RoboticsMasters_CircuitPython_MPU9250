@@ -302,13 +302,13 @@ class MPU9250:
     def read_temp_raw(self):
         self._read_bytes(_XGTYPE, 0x80 | _MPU9250_REGISTER_TEMP_OUT_H, 2,
                          self._BUFFER)
-        temp = ((self._BUFFER[1] << 8) | self._BUFFER[0]) >> 4
-        return _twos_comp(temp, 12)
+        temp_read = self.dataConv(self._BUFFER[1], self._BUFFER[0])
+        return temp_read
 
     @property
     def temperature(self):
         temp = self.read_temp_raw()
-        temp = ((temp - _MPU9250_TEMP_OFFSET) / _MPU9250_TEMP_SENS) + _MPU9250_TEMP_OFFSET
+        temp = round(((temp - _MPU9250_TEMP_OFFSET)/ _MPU9250_TEMP_SENS) + _MPU9250_TEMP_OFFSET, 3)
         return temp
 
     def _read_u8(self, sensor_type, address):
@@ -320,6 +320,11 @@ class MPU9250:
     def _write_u8(self, sensor_type, address, val):
         raise NotImplementedError()
 
+    def dataConv(self, data1, data2):
+        value = data1 | (data2 << 8)
+        if(value & (1 << 16 - 1)):
+            value -= (1<<16)
+        return value
 
 class MPU9250_I2C(MPU9250):
 
